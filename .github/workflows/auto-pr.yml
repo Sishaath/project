@@ -22,21 +22,20 @@ jobs:
           BRANCH="${GITHUB_REF_NAME}"
           EXISTS=$(gh pr list --head "$BRANCH" --base main --json number --jq length)
           if [ "$EXISTS" -eq 0 ]; then
-            gh pr create \
-              --base main \
-              --head "$BRANCH" \
-              --title "Merge $BRANCH into main" \
-              --body "$(cat <<EOF
-          ## Auto-generated Pull Request
+            BODY="## Auto-generated Pull Request
 
           **Branch:** \`$BRANCH\`
           **Commit:** \`$GITHUB_SHA\`
           **Author:** $GITHUB_ACTOR
 
           ---
-          Triggered automatically on push to \`$BRANCH\`.
-          EOF
-          )"
+          Triggered automatically on push to \`$BRANCH\`."
+
+            gh pr create \
+              --base main \
+              --head "$BRANCH" \
+              --title "Merge $BRANCH into main" \
+              --body "$BODY"
             echo "Pull request created for branch: $BRANCH"
           else
             echo "PR already exists for branch: $BRANCH — skipping."
