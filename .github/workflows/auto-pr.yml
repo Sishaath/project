@@ -20,23 +20,19 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           BRANCH="${GITHUB_REF_NAME}"
-          EXISTS=$(gh pr list --head "$BRANCH" --base main --json number --jq length)
-          if [ "$EXISTS" -eq 0 ]; then
-            BODY="## Auto-generated Pull Request
+          echo "Branch: $BRANCH"
+          echo "Commit: $GITHUB_SHA"
+          echo "Actor:  $GITHUB_ACTOR"
 
-          **Branch:** \`$BRANCH\`
-          **Commit:** \`$GITHUB_SHA\`
-          **Author:** $GITHUB_ACTOR
-
-          ---
-          Triggered automatically on push to \`$BRANCH\`."
-
-            gh pr create \
-              --base main \
-              --head "$BRANCH" \
-              --title "Merge $BRANCH into main" \
-              --body "$BODY"
-            echo "Pull request created for branch: $BRANCH"
-          else
-            echo "PR already exists for branch: $BRANCH — skipping."
+          OPEN_PR=$(gh pr list --head "$BRANCH" --base main --state open --json number --jq '.[0].number // empty')
+          if [ -n "$OPEN_PR" ]; then
+            echo "Open PR #$OPEN_PR already exists — skipping."
+            exit 0
           fi
+
+          echo "No open PR found. Creating..."
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "Merge $BRANCH into main" \
+            --body "Auto PR: $GITHUB_ACTOR pushed to \`$BRANCH\` (commit \`$GITHUB_SHA\`)"
