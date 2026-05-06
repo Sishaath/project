@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:;" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <title>Dashboard — AuthSpace</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --panel: #111118;
+      --border: rgba(255,255,255,0.07);
+      --accent: #84e0a3;
+      --accent-dim: rgba(132,224,163,0.12);
+      --text: #e8e8f0;
+      --muted: #6b6b80;
+      --radius: 12px;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background-image:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(132,224,163,0.09) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 85% 80%, rgba(80,120,200,0.07) 0%, transparent 60%);
+    }
+
+    .card {
+      width: 100%;
+      max-width: 480px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 48px 40px;
+      box-shadow: 0 32px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(132,224,163,0.05);
+      animation: rise 0.5s cubic-bezier(.22,.68,0,1.2) both;
+      text-align: center;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(24px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.7rem;
+      letter-spacing: -0.5px;
+      margin-bottom: 24px;
+    }
+    .logo span { color: var(--accent); }
+
+    .badge {
+      display: inline-block;
+      background: var(--accent-dim);
+      border: 1px solid rgba(132,224,163,0.25);
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 36px;
+    }
+
+    .user-info {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      text-align: left;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    .user-info strong {
+      color: var(--text);
+    }
+
+    .btn-logout {
+      padding: 12px 28px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-logout:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo">Auth<span>Space</span></div>
+  <div class="badge">Access Granted</div>
+  <h1 id="welcome-msg">Welcome!</h1>
+  <p>You have successfully signed in to your workspace.<br>Your session is active and secure.</p>
+
+  <div class="user-info">
+    <div><strong>Email:</strong> <span id="user-email">—</span></div>
+  </div>
+
+  <button class="btn-logout" onclick="logout()">Sign Out</button>
+</div>
+
+<script>
+  const email = sessionStorage.getItem('auth_email');
+  if (!email) {
+    window.location.href = 'index.html';
+  } else {
+    document.getElementById('user-email').textContent = email;
+    const name = email.split('@')[0];
+    document.getElementById('welcome-msg').textContent = 'Welcome, ' + name.charAt(0).toUpperCase() + name.slice(1) + '!';
+  }
+
+  function logout() {
+    sessionStorage.removeItem('auth_email');
+    window.location.href = 'index.html';
+  }
+</script>
+
+</body>
+</html>
