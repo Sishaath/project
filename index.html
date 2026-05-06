@@ -16,12 +16,12 @@
       --bg: #0a0a0f;
       --panel: #111118;
       --border: rgba(255,255,255,0.07);
-      --accent: #c8f04e;
-      --accent-dim: rgba(200,240,78,0.12);
+      --accent: #84e0a3;
+      --accent-dim: rgba(132,224,163,0.12);
       --text: #e8e8f0;
       --muted: #6b6b80;
       --error: #ff5c5c;
-      --radius: 16px;
+      --radius: 12px;
     }
 
     body {
@@ -34,8 +34,8 @@
       justify-content: center;
       padding: 24px;
       background-image:
-        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(200,240,78,0.08) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 40% at 85% 80%, rgba(100,80,200,0.06) 0%, transparent 60%);
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(132,224,163,0.09) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 85% 80%, rgba(80,120,200,0.07) 0%, transparent 60%);
     }
 
     .card {
@@ -45,7 +45,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 48px 40px 40px;
-      box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+      box-shadow: 0 32px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(132,224,163,0.05);
       animation: rise 0.5s cubic-bezier(.22,.68,0,1.2) both;
     }
 
@@ -197,7 +197,7 @@
 
 <div class="card">
   <div class="logo">Auth<span>Space</span></div>
-  <p class="subtitle">Secure access to your workspace</p>
+  <p class="subtitle">Welcome back. Sign in to continue.</p>
 
   <div class="tabs">
     <button class="tab active" onclick="switchTab('login')">Sign In</button>
@@ -211,7 +211,7 @@
 
     <div class="field">
       <label for="l-email">Email</label>
-      <input id="l-email" type="email" placeholder="you@example.com" required maxlength="100" />
+      <input id="l-email" type="email" placeholder="name@company.com" required maxlength="100" />
       <span class="hint" id="l-email-err">Enter a valid email address.</span>
     </div>
     <div class="field">
@@ -224,7 +224,7 @@
     </div>
     <button type="submit" id="login-btn">Sign In</button>
     <div class="divider">or</div>
-    <div class="footer-link">No account? <a href="#" onclick="switchTab('signup');return false;">Create one</a></div>
+    <div class="footer-link">New here? <a href="#" onclick="switchTab('signup');return false;">Join now</a></div>
   </form>
 
   <!-- SIGNUP FORM -->
@@ -233,22 +233,22 @@
 
     <div class="field">
       <label for="s-name">Full Name</label>
-      <input id="s-name" type="text" placeholder="Adhi" required maxlength="60" />
+      <input id="s-name" type="text" placeholder="Jane Doe" required maxlength="60" />
       <span class="hint" id="s-name-err">Name must be 2–60 characters.</span>
     </div>
     <div class="field">
       <label for="s-email">Email</label>
-      <input id="s-email" type="email" placeholder="you@example.com" required maxlength="100" />
+      <input id="s-email" type="email" placeholder="name@company.com" required maxlength="100" />
       <span class="hint" id="s-email-err">Enter a valid email address.</span>
     </div>
     <div class="field">
       <label for="s-pass">Password</label>
-      <input id="s-pass" type="password" placeholder="Min. 8 characters" required maxlength="128" />
+      <input id="s-pass" type="password" placeholder="Create a strong password" required maxlength="128" />
       <span class="hint" id="s-pass-err">Password must be at least 8 characters.</span>
     </div>
     <button type="submit">Create Account</button>
     <div class="divider">or</div>
-    <div class="footer-link">Already have an account? <a href="#" onclick="switchTab('login');return false;">Sign in</a></div>
+    <div class="footer-link">Have an account? <a href="#" onclick="switchTab('login');return false;">Sign in</a></div>
   </form>
 </div>
 
