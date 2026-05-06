@@ -1,0 +1,65 @@
+name: Email Notifications
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [opened, closed]
+
+jobs:
+  notify-pr-opened:
+    name: Notify on PR Opened
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send PR opened email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "New PR Opened: ${{ github.event.pull_request.title }}"
+          to: ${{ secrets.MAIL_USERNAME }}
+          from: ${{ secrets.MAIL_USERNAME }}
+          body: |
+            A new pull request has been opened.
+
+            Title   : ${{ github.event.pull_request.title }}
+            Author  : ${{ github.actor }}
+            Branch  : ${{ github.event.pull_request.head.ref }} → main
+            URL     : ${{ github.event.pull_request.html_url }}
+
+  notify-merged:
+    name: Notify on Merge to Main
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get changed files
+        id: changes
+        run: |
+          echo "files=$(git diff --name-status HEAD~1 HEAD | tr '\n' ' ')" >> $GITHUB_OUTPUT
+
+      - name: Send merge notification email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "Merged to main — ${{ github.repository }}"
+          to: ${{ secrets.MAIL_USERNAME }}
+          from: ${{ secrets.MAIL_USERNAME }}
+          body: |
+            Code has been merged to main.
+
+            Commit  : ${{ github.sha }}
+            Author  : ${{ github.actor }}
+            Message : ${{ github.event.head_commit.message }}
+            Changes : ${{ steps.changes.outputs.files }}
+
+            Pipeline: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
