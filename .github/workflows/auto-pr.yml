@@ -16,27 +16,19 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create Pull Request
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          BRANCH="${GITHUB_REF_NAME}"
-          EXISTS=$(gh pr list --head "$BRANCH" --base main --json number --jq length)
-          if [ "$EXISTS" -eq 0 ]; then
-            BODY="## Auto-generated Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main
+          branch: ${{ github.ref_name }}
+          title: "Merge ${{ github.ref_name }} into main"
+          body: |
+            ## Auto-generated Pull Request
 
-          **Branch:** \`$BRANCH\`
-          **Commit:** \`$GITHUB_SHA\`
-          **Author:** $GITHUB_ACTOR
+            **Branch:** `${{ github.ref_name }}`
+            **Commit:** `${{ github.sha }}`
+            **Author:** ${{ github.actor }}
 
-          ---
-          Triggered automatically on push to \`$BRANCH\`."
-
-            gh pr create \
-              --base main \
-              --head "$BRANCH" \
-              --title "Merge $BRANCH into main" \
-              --body "$BODY"
-            echo "Pull request created for branch: $BRANCH"
-          else
-            echo "PR already exists for branch: $BRANCH — skipping."
-          fi
+            ---
+            Triggered automatically on push to `${{ github.ref_name }}`.
+          draft: false
