@@ -16,19 +16,23 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: main
-          branch: ${{ github.ref_name }}
-          title: "Merge ${{ github.ref_name }} into main"
-          body: |
-            ## Auto-generated Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="${GITHUB_REF_NAME}"
+          echo "Branch: $BRANCH"
+          echo "Commit: $GITHUB_SHA"
+          echo "Actor:  $GITHUB_ACTOR"
 
-            **Branch:** `${{ github.ref_name }}`
-            **Commit:** `${{ github.sha }}`
-            **Author:** ${{ github.actor }}
+          OPEN_PR=$(gh pr list --head "$BRANCH" --base main --state open --json number --jq '.[0].number // empty')
+          if [ -n "$OPEN_PR" ]; then
+            echo "Open PR #$OPEN_PR already exists — skipping."
+            exit 0
+          fi
 
-            ---
-            Triggered automatically on push to `${{ github.ref_name }}`.
-          draft: false
+          echo "No open PR found. Creating..."
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "Merge $BRANCH into main" \
+            --body "Auto PR: $GITHUB_ACTOR pushed to \`$BRANCH\` (commit \`$GITHUB_SHA\`)"
