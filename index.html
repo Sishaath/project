@@ -1,201 +1,497 @@
-<!DOCTYPE html>                                                                                                                 
-  <html lang="en">                       
-  <head>                                                                                                                          
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />                                                      
-    <meta http-equiv="Content-Security-Policy"                                                                                    
-      content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 
-  https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:;" />                                         
-    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-    <meta http-equiv="X-Frame-Options" content="DENY" />                                                                          
-    <title>CalcSpace</title>                                
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />               
-    <style>                                                                                                                       
-      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-                                                                                                                                  
-      :root {                                               
-        --bg: #0a0a0f;
-        --panel: #111118;                                                                                                         
-        --border: rgba(255,255,255,0.07);
-        --accent: #84e0a3;                                                                                                        
-        --accent-dim: rgba(132,224,163,0.12);               
-        --text: #e8e8f0;                                                                                                          
-        --muted: #6b6b80;                                                                                                         
-        --btn: #1a1a24;                                                                                                           
-        --radius: 12px;                                                                                                           
-      }                                                                                                                           
-   
-      body {                                                                                                                      
-        min-height: 100vh;                                  
-        background: var(--bg);
-        font-family: 'DM Sans', sans-serif;
-        color: var(--text);                                                                                                       
-        display: flex;
-        align-items: center;                                                                                                      
-        justify-content: center;                            
-        padding: 24px;
-        background-image:                                                                                                         
-          radial-gradient(ellipse 80% 60% at 50% -10%, rgba(132,224,163,0.09) 0%, transparent 60%),
-          radial-gradient(ellipse 40% 40% at 85% 80%, rgba(80,120,200,0.07) 0%, transparent 60%);                                 
-      }                                                                                                                           
-                                                                                                                                  
-      .calc {                                                                                                                     
-        width: 320px;                                       
-        background: var(--panel);                                                                                                 
-        border: 1px solid var(--border);                    
-        border-radius: var(--radius);
-        padding: 24px;                                                                                                            
-        box-shadow: 0 32px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(132,224,163,0.05);
-        animation: rise 0.4s cubic-bezier(.22,.68,0,1.2) both;                                                                    
-      }                                                                                                                           
-                                                                                                                                  
-      @keyframes rise {                                                                                                           
-        from { opacity: 0; transform: translateY(20px) scale(0.97); }
-        to   { opacity: 1; transform: none; }
-      }                                                                                                                           
-   
-      .title { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }    
-      .title span { color: var(--accent); }                 
-                                                                                                                                  
-      .display {                                            
-        background: rgba(0,0,0,0.3);                                                                                              
-        border: 1px solid var(--border);                    
-        border-radius: 10px;
-        padding: 16px 20px;                                                                                                       
-        margin-bottom: 20px;
-        text-align: right;                                                                                                        
-        min-height: 80px;                                                                                                         
-        display: flex;
-        flex-direction: column;                                                                                                   
-        justify-content: flex-end;                          
-        gap: 4px;                                                                                                                 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:;" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <title>CalcSpace — Scientific</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --panel: #111118;
+      --border: rgba(255,255,255,0.07);
+      --accent: #84e0a3;
+      --accent-dim: rgba(132,224,163,0.12);
+      --text: #e8e8f0;
+      --muted: #6b6b80;
+      --btn: #1a1a24;
+      --btn-sci: #13131c;
+      --radius: 12px;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background-image:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(132,224,163,0.09) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 85% 80%, rgba(80,120,200,0.07) 0%, transparent 60%);
+    }
+
+    .calc {
+      width: 400px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 32px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(132,224,163,0.05);
+      animation: rise 0.4s cubic-bezier(.22,.68,0,1.2) both;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(20px) scale(0.97); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .title {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .title span { color: var(--accent); }
+
+    .mode-toggle {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border: 1px solid var(--accent);
+      border-radius: 100px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .mode-toggle:hover { background: rgba(132,224,163,0.2); }
+
+    .display {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      text-align: right;
+      min-height: 90px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 4px;
+    }
+
+    .display-expr {
+      font-size: 0.82rem;
+      color: var(--muted);
+      min-height: 20px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .display-val {
+      font-size: 2.2rem;
+      font-weight: 300;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .display-val.error { color: #ff5c5c; font-size: 1.4rem; }
+
+    .sci-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .std-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    button {
+      padding: 15px 6px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--btn);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s, border-color 0.15s;
+      user-select: none;
+    }
+    button:hover  { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.14); }
+    button:active { transform: scale(0.92); }
+
+    .btn-sci   { background: var(--btn-sci); color: rgba(132,224,163,0.85); font-size: 0.82rem; }
+    .btn-op    { color: var(--accent); }
+    .btn-clear { color: #ff5c5c; }
+    .btn-eq    {
+      background: var(--accent);
+      color: #0a0a0f;
+      font-weight: 500;
+      border-color: transparent;
+    }
+    .btn-eq:hover { opacity: 0.88; background: var(--accent); }
+
+    .sep {
+      height: 1px;
+      background: var(--border);
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="calc">
+  <div class="header">
+    <div class="title">Calc<span>Space</span> — Scientific</div>
+    <button class="mode-toggle" id="modeBtn" onclick="toggleMode()">DEG</button>
+  </div>
+
+  <div class="display">
+    <div class="display-expr" id="expr"></div>
+    <div class="display-val"  id="val">0</div>
+  </div>
+
+  <!-- Scientific buttons -->
+  <div class="sci-grid">
+    <button class="btn-sci" onclick="appendFn('sin(')">sin</button>
+    <button class="btn-sci" onclick="appendFn('cos(')">cos</button>
+    <button class="btn-sci" onclick="appendFn('tan(')">tan</button>
+    <button class="btn-sci" onclick="appendSym('π')">π</button>
+    <button class="btn-sci" onclick="appendSym('e')">e</button>
+
+    <button class="btn-sci" onclick="appendFn('ln(')">ln</button>
+    <button class="btn-sci" onclick="appendFn('log(')">log</button>
+    <button class="btn-sci" onclick="appendFn('√(')">√</button>
+    <button class="btn-sci" onclick="appendSym('^2')">x²</button>
+    <button class="btn-sci" onclick="appendSym('^')">xʸ</button>
+
+    <button class="btn-sci" onclick="appendSym('(')">(</button>
+    <button class="btn-sci" onclick="appendSym(')')">)</button>
+    <button class="btn-sci" onclick="pressBack()">⌫</button>
+    <button class="btn-sci btn-clear" onclick="pressClear()">C</button>
+    <button class="btn-sci" onclick="pressPercent()">%</button>
+  </div>
+
+  <div class="sep"></div>
+
+  <!-- Standard buttons -->
+  <div class="std-grid">
+    <button onclick="pressDigit('7')">7</button>
+    <button onclick="pressDigit('8')">8</button>
+    <button onclick="pressDigit('9')">9</button>
+    <button class="btn-op" onclick="appendSym('÷')">÷</button>
+
+    <button onclick="pressDigit('4')">4</button>
+    <button onclick="pressDigit('5')">5</button>
+    <button onclick="pressDigit('6')">6</button>
+    <button class="btn-op" onclick="appendSym('×')">×</button>
+
+    <button onclick="pressDigit('1')">1</button>
+    <button onclick="pressDigit('2')">2</button>
+    <button onclick="pressDigit('3')">3</button>
+    <button class="btn-op" onclick="appendSym('−')">−</button>
+
+    <button onclick="pressNegate()">+/−</button>
+    <button onclick="pressDigit('0')">0</button>
+    <button onclick="pressDigit('.')">.</button>
+    <button class="btn-op" onclick="appendSym('+')">+</button>
+
+    <button class="btn-eq" style="grid-column: span 4" onclick="pressEquals()">=</button>
+  </div>
+</div>
+
+<script>
+  const elVal    = document.getElementById('val');
+  const elExpr   = document.getElementById('expr');
+  const elMode   = document.getElementById('modeBtn');
+
+  let expr      = '';
+  let lastResult = null;
+  let isDeg     = true;
+
+  function setVal(v, isErr) {
+    elVal.textContent = v;
+    elVal.className   = 'display-val' + (isErr ? ' error' : '');
+  }
+  function setExpr(v) { elExpr.textContent = v; }
+
+  function toggleMode() {
+    isDeg = !isDeg;
+    elMode.textContent = isDeg ? 'DEG' : 'RAD';
+  }
+
+  function appendSym(s) {
+    if (lastResult !== null) {
+      // continue from result only if appending an operator
+      const ops = ['+', '−', '×', '÷', '^'];
+      if (ops.includes(s)) {
+        expr = String(lastResult);
+      } else {
+        expr = '';
       }
-                                                                                                                                  
-      .display-expr { font-size: 0.8rem; color: var(--muted); min-height: 18px; overflow: hidden; text-overflow: ellipsis;        
-  white-space: nowrap; }
-      .display-val  { font-size: 2.2rem; font-weight: 300; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }      
-                                                                                                                                  
-      .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }                                                  
-                                                                                                                                  
-      button {                                                                                                                    
-        padding: 18px 8px;                                  
-        border: 1px solid var(--border);
-        border-radius: 10px;                                                                                                      
-        background: var(--btn);
-        color: var(--text);                                                                                                       
-        font-family: 'DM Sans', sans-serif;                 
-        font-size: 1rem;                                                                                                          
-        cursor: pointer;
-        transition: background 0.15s, transform 0.1s;                                                                             
-        user-select: none;                                                                                                        
-      }
-      button:hover  { background: rgba(255,255,255,0.07); }                                                                       
-      button:active { transform: scale(0.93); }                                                                                   
-   
-      .btn-op    { color: var(--accent); }                                                                                        
-      .btn-clear { color: #ff5c5c; }                        
-      .btn-eq    { background: var(--accent); color: #0a0a0f; font-weight: 500; border-color: transparent; }                      
-      .btn-eq:hover { opacity: 0.88; background: var(--accent); }                                                                 
-    </style>                                                                                                                      
-  </head>                                                                                                                         
-  <body>                                                    
-                                                                                                                                  
-  <div class="calc">                                        
-    <div class="title">Calc<span>Space</span> — Basic</div>
-    <div class="display">                                                                                                         
-      <div class="display-expr" id="expr"></div>
-      <div class="display-val"  id="val">0</div>                                                                                  
-    </div>                                                                                                                        
-    <div class="grid">
-      <button class="btn-clear" onclick="pressClear()">C</button>                                                                 
-      <button class="btn-op"    onclick="pressBack()">⌫</button>
-      <button class="btn-op"    onclick="pressPercent()">%</button>                                                               
-      <button class="btn-op"    onclick="pressOp('/')">÷</button>                                                                 
-                                                                                                                                  
-      <button onclick="pressDigit('7')">7</button>                                                                                
-      <button onclick="pressDigit('8')">8</button>          
-      <button onclick="pressDigit('9')">9</button>                                                                                
-      <button class="btn-op" onclick="pressOp('*')">×</button>
-                                                                                                                                  
-      <button onclick="pressDigit('4')">4</button>
-      <button onclick="pressDigit('5')">5</button>                                                                                
-      <button onclick="pressDigit('6')">6</button>                                                                                
-      <button class="btn-op" onclick="pressOp('-')">−</button>
-                                                                                                                                  
-      <button onclick="pressDigit('1')">1</button>                                                                                
-      <button onclick="pressDigit('2')">2</button>
-      <button onclick="pressDigit('3')">3</button>                                                                                
-      <button class="btn-op" onclick="pressOp('+')">+</button>
-                                                                                                                                  
-      <button onclick="pressNegate()">+/−</button>
-      <button onclick="pressDigit('0')">0</button>                                                                                
-      <button onclick="pressDigit('.')">.</button>          
-      <button class="btn-eq" onclick="pressEquals()">=</button>                                                                   
-    </div>
-  </div>                                                                                                                          
-                                                            
-  <script>
-    const elVal  = document.getElementById('val');
-    const elExpr = document.getElementById('expr');
-                                                                                                                                  
-    let display = '', firstOp = null, operator = null, waiting = false, computed = false;
-    const opLabel = { '+': '+', '-': '−', '*': '×', '/': '÷' };                                                                   
-                                                                                                                                  
-    function setVal(v)  { elVal.textContent  = v; }
-    function setExpr(v) { elExpr.textContent = v; }                                                                               
-                                                                                                                                  
-    function pressDigit(d) {
-      if (computed) { display = ''; computed = false; }                                                                           
-      if (waiting)  { display = ''; waiting  = false; }     
-      if (d === '.' && display.includes('.')) return;
-      display = (display === '0' || display === '') && d !== '.' ? d : display + d;                                               
+      lastResult = null;
+    }
+    expr += s;
+    setExpr(expr);
+    setVal(expr.slice(-10) || '0');
+  }
+
+  function appendFn(fn) {
+    if (lastResult !== null) { expr = ''; lastResult = null; }
+    expr += fn;
+    setExpr(expr);
+    setVal(expr.slice(-12) || '0');
+  }
+
+  function pressDigit(d) {
+    if (lastResult !== null) { expr = ''; lastResult = null; }
+    if (d === '.' && /\d*\.\d*$/.test(expr)) return;
+    expr += d;
+    setExpr(expr);
+    // show the number being typed (last number in expr)
+    const m = expr.match(/[\d.]+$/);
+    setVal(m ? m[0] : expr.slice(-12));
+  }
+
+  function pressBack() {
+    if (lastResult !== null) { pressClear(); return; }
+    expr = expr.slice(0, -1);
+    setExpr(expr);
+    setVal(expr || '0');
+  }
+
+  function pressClear() {
+    expr = ''; lastResult = null;
+    setExpr(''); setVal('0');
+  }
+
+  function pressPercent() {
+    if (!expr) return;
+    expr += '/100';
+    pressEquals();
+  }
+
+  function pressNegate() {
+    if (lastResult !== null) {
+      lastResult = -lastResult;
+      expr = String(lastResult);
+      setExpr(expr);
+      setVal(String(lastResult));
+      return;
+    }
+    if (!expr) return;
+    expr = '(' + expr + ')×(−1)';
+    pressEquals();
+  }
+
+  function pressEquals() {
+    if (!expr) return;
+    setExpr(expr + ' =');
+    const result = safeEval(expr, isDeg);
+    if (result === null) {
+      setVal('Error', true);
+      lastResult = null;
+    } else {
+      const display = fmt(result);
       setVal(display);
-    }                                                                                                                             
-                                                            
-    function pressOp(op) {                                                                                                        
-      const cur = parseFloat(display) || 0;
-      if (firstOp !== null && !waiting) {                                                                                         
-        const res = compute(firstOp, operator, cur);        
-        display = fmt(res); setVal(display);
-        firstOp = isFinite(res) ? res : cur;                                                                                      
-      } else { firstOp = cur; }
-      setExpr(fmt(firstOp) + ' ' + opLabel[op]);                                                                                  
-      operator = op; waiting = true; computed = false;                                                                            
+      lastResult = result;
+      expr = display;
     }
-                                                                                                                                  
-    function pressEquals() {                                
-      if (firstOp === null || operator === null) return;
-      const cur = parseFloat(display) || 0;
-      setExpr(fmt(firstOp) + ' ' + opLabel[operator] + ' ' + fmt(cur) + ' =');                                                    
-      const res = compute(firstOp, operator, cur);
-      display = fmt(res); setVal(display);                                                                                        
-      firstOp = null; operator = null; waiting = false; computed = true;                                                          
+  }
+
+  function fmt(n) {
+    if (!isFinite(n)) return 'Error';
+    const r = Math.round(n * 1e10) / 1e10;
+    return String(r);
+  }
+
+  // ── Safe expression evaluator (no eval) ──────────────────────
+
+  function safeEval(raw, deg) {
+    try {
+      const tokens = tokenize(normalize(raw));
+      const parser = new Parser(tokens, deg);
+      const result = parser.parse();
+      if (parser.pos < tokens.length) return null;
+      return isFinite(result) ? result : null;
+    } catch (e) {
+      return null;
     }
-                                                                                                                                  
-    function compute(a, op, b) {                            
-      switch (op) {
-        case '+': return a + b;                                                                                                   
-        case '-': return a - b;
-        case '*': return a * b;                                                                                                   
-        case '/': return b === 0 ? NaN : a / b;             
+  }
+
+  function normalize(s) {
+    return s
+      .replace(/×/g, '*')
+      .replace(/÷/g, '/')
+      .replace(/−/g, '-')
+      .replace(/√/g, 'sqrt');
+  }
+
+  function tokenize(s) {
+    const tokens = [];
+    let i = 0;
+    const fns = ['asin','acos','atan','sin','cos','tan','log','ln','sqrt'];
+    while (i < s.length) {
+      if (/\s/.test(s[i])) { i++; continue; }
+
+      if (/[\d.]/.test(s[i])) {
+        let num = '';
+        while (i < s.length && /[\d.]/.test(s[i])) num += s[i++];
+        tokens.push({ type: 'num', val: parseFloat(num) });
+        continue;
+      }
+
+      if (s[i] === 'π') { tokens.push({ type: 'const', val: Math.PI }); i++; continue; }
+      if (s[i] === 'e' && !/[a-z]/.test(s[i+1] || '')) {
+        tokens.push({ type: 'const', val: Math.E }); i++; continue;
+      }
+
+      let matched = false;
+      for (const fn of fns) {
+        if (s.slice(i).startsWith(fn)) {
+          tokens.push({ type: 'fn', val: fn });
+          i += fn.length;
+          matched = true;
+          break;
+        }
+      }
+      if (matched) continue;
+
+      tokens.push({ type: 'op', val: s[i] });
+      i++;
+    }
+    return tokens;
+  }
+
+  class Parser {
+    constructor(tokens, deg) {
+      this.t   = tokens;
+      this.pos = 0;
+      this.deg = deg;
+    }
+
+    peek()    { return this.t[this.pos]; }
+    consume() { return this.t[this.pos++]; }
+
+    parse() { return this.parseExpr(); }
+
+    parseExpr() {
+      let left = this.parseTerm();
+      while (this.peek() && (this.peek().val === '+' || this.peek().val === '-')) {
+        const op = this.consume().val;
+        const right = this.parseTerm();
+        left = op === '+' ? left + right : left - right;
+      }
+      return left;
+    }
+
+    parseTerm() {
+      let left = this.parsePower();
+      while (this.peek() && (this.peek().val === '*' || this.peek().val === '/')) {
+        const op = this.consume().val;
+        const right = this.parsePower();
+        if (op === '/') {
+          if (right === 0) throw new Error('Division by zero');
+          left = left / right;
+        } else {
+          left = left * right;
+        }
+      }
+      return left;
+    }
+
+    parsePower() {
+      let base = this.parseUnary();
+      if (this.peek() && this.peek().val === '^') {
+        this.consume();
+        const exp = this.parseUnary();
+        base = Math.pow(base, exp);
+      }
+      return base;
+    }
+
+    parseUnary() {
+      if (this.peek() && this.peek().val === '-') {
+        this.consume();
+        return -this.parseBase();
+      }
+      return this.parseBase();
+    }
+
+    parseBase() {
+      const tok = this.peek();
+      if (!tok) throw new Error('Unexpected end');
+
+      if (tok.type === 'num' || tok.type === 'const') {
+        this.consume();
+        return tok.val;
+      }
+
+      if (tok.type === 'fn') {
+        this.consume();
+        const paren = this.consume();
+        if (!paren || paren.val !== '(') throw new Error('Expected (');
+        const arg = this.parseExpr();
+        const close = this.consume();
+        if (!close || close.val !== ')') throw new Error('Expected )');
+        return this.applyFn(tok.val, arg);
+      }
+
+      if (tok.type === 'op' && tok.val === '(') {
+        this.consume();
+        const val = this.parseExpr();
+        const close = this.consume();
+        if (!close || close.val !== ')') throw new Error('Expected )');
+        return val;
+      }
+
+      throw new Error('Unexpected token: ' + tok.val);
+    }
+
+    applyFn(fn, v) {
+      const toR = this.deg ? v * Math.PI / 180 : v;
+      const fR  = this.deg ? 180 / Math.PI : 1;
+      switch (fn) {
+        case 'sin':  return Math.sin(toR);
+        case 'cos':  return Math.cos(toR);
+        case 'tan':  return Math.tan(toR);
+        case 'asin': return Math.asin(v) * fR;
+        case 'acos': return Math.acos(v) * fR;
+        case 'atan': return Math.atan(v) * fR;
+        case 'log':  return Math.log10(v);
+        case 'ln':   return Math.log(v);
+        case 'sqrt': return Math.sqrt(v);
+        default:     throw new Error('Unknown fn: ' + fn);
       }
     }
-                                                                                                                                  
-    function fmt(n) { return !isFinite(n) ? 'Error' : String(Math.round(n * 1e10) / 1e10); }                                      
-                                                                                                                                  
-    function pressClear() {                                                                                                       
-      display = ''; firstOp = null; operator = null; waiting = false; computed = false;
-      setVal('0'); setExpr('');
-    }
+  }
+</script>
 
-    function pressBack() {                                                                                                        
-      if (computed) { pressClear(); return; }
-      display = display.slice(0, -1); setVal(display || '0');                                                                     
-    }                                                       
-
-    function pressPercent() { display = fmt((parseFloat(display) || 0) / 100); setVal(display); computed = true; }                
-    function pressNegate()  { display = fmt(-(parseFloat(display) || 0)); setVal(display); }
-  </script>                                                                                                                       
-                                                                                                                                  
-  </body>
-  </html>
+</body>
+</html>
