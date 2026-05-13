@@ -7,20 +7,20 @@
     content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; img-src 'self' data:;" />
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta http-equiv="X-Frame-Options" content="DENY" />
-  <title>AuthSpace</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <title>CalcSpace</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #9bec0f;
+      --bg: #0a0a0f;
       --panel: #111118;
       --border: rgba(255,255,255,0.07);
-      --accent: #24d81e;
+      --accent: #84e0a3;
       --accent-dim: rgba(132,224,163,0.12);
       --text: #e8e8f0;
       --muted: #6b6b80;
-      --error: #ff5c5c;
+      --btn: #1a1a24;
       --radius: 12px;
     }
 
@@ -38,327 +38,219 @@
         radial-gradient(ellipse 40% 40% at 85% 80%, rgba(80,120,200,0.07) 0%, transparent 60%);
     }
 
-    .card {
-      width: 100%;
-      max-width: 420px;
+    .calc {
+      width: 320px;
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 48px 40px 40px;
+      padding: 24px;
       box-shadow: 0 32px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(132,224,163,0.05);
-      animation: rise 0.5s cubic-bezier(.22,.68,0,1.2) both;
+      animation: rise 0.4s cubic-bezier(.22,.68,0,1.2) both;
     }
 
     @keyframes rise {
-      from { opacity: 0; transform: translateY(24px) scale(0.97); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
+      from { opacity: 0; transform: translateY(20px) scale(0.97); }
+      to   { opacity: 1; transform: none; }
     }
 
-    .logo {
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.7rem;
-      letter-spacing: -0.5px;
-      margin-bottom: 6px;
-    }
-    .logo span { color: var(--accent); }
-
-    .subtitle {
-      color: var(--muted);
-      font-size: 0.85rem;
-      margin-bottom: 36px;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 4px;
-      background: rgba(255,255,255,0.04);
-      border-radius: 10px;
-      padding: 4px;
-      margin-bottom: 28px;
-    }
-
-    .tab {
-      flex: 1;
-      padding: 9px;
-      border: none;
-      border-radius: 8px;
-      background: transparent;
-      color: var(--muted);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.88rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .tab.active {
-      background: var(--accent);
-      color: #0a0a0f;
-    }
-
-    .form { display: none; flex-direction: column; gap: 16px; }
-    .form.active { display: flex; }
-
-    .field { display: flex; flex-direction: column; gap: 6px; }
-
-    label {
-      font-size: 0.78rem;
-      font-weight: 500;
+    .title {
+      font-size: 0.75rem;
       color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: 0.6px;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
     }
+    .title span { color: var(--accent); }
 
-    input {
-      background: rgba(255,255,255,0.04);
+    .display {
+      background: rgba(0,0,0,0.3);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 12px 16px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      text-align: right;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 4px;
+    }
+
+    .display-expr {
+      font-size: 0.8rem;
+      color: var(--muted);
+      min-height: 18px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .display-val {
+      font-size: 2.2rem;
+      font-weight: 300;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      padding: 18px 8px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--btn);
       color: var(--text);
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.95rem;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s, border-color 0.15s;
+      user-select: none;
     }
-    input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-dim);
-    }
-    input::placeholder { color: var(--muted); }
-    input.error { border-color: var(--error); }
+    button:hover  { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.14); }
+    button:active { transform: scale(0.93); }
 
-    /* Honeypot - hidden from real users */
-    .hp { display: none !important; }
-
-    .hint {
-      font-size: 0.75rem;
-      color: var(--error);
-      min-height: 16px;
-      display: none;
-    }
-    .hint.show { display: block; }
-
-    .lockout-msg {
-      font-size: 0.82rem;
-      color: var(--error);
-      background: rgba(255,92,92,0.08);
-      border: 1px solid rgba(255,92,92,0.2);
-      border-radius: 8px;
-      padding: 10px 14px;
-      display: none;
-    }
-    .lockout-msg.show { display: block; }
-
-    button[type="submit"] {
-      margin-top: 8px;
-      padding: 13px;
+    .btn-op    { color: var(--accent); }
+    .btn-clear { color: #ff5c5c; }
+    .btn-eq    {
       background: var(--accent);
       color: #0a0a0f;
-      border: none;
-      border-radius: 10px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.95rem;
       font-weight: 500;
-      cursor: pointer;
-      transition: opacity 0.2s, transform 0.15s;
+      border-color: transparent;
     }
-    button[type="submit"]:hover { opacity: 0.88; }
-    button[type="submit"]:active { transform: scale(0.98); }
-    button[type="submit"]:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--muted);
-      font-size: 0.78rem;
-      margin: 4px 0;
-    }
-    .divider::before, .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    .footer-link {
-      text-align: center;
-      font-size: 0.82rem;
-      color: var(--muted);
-    }
-    .footer-link a {
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 500;
-    }
-    .footer-link a:hover { text-decoration: underline; }
+    .btn-eq:hover { opacity: 0.88; background: var(--accent); }
   </style>
 </head>
 <body>
 
-<div class="card">
-  <div class="logo">Auth<span>Space</span></div>
-  <p class="subtitle">Welcome back. Sign in to continue.</p>
+<div class="calc">
+  <div class="title">Calc<span>Space</span> — Basic</div>
 
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('login')">Sign In</button>
-    <button class="tab" onclick="switchTab('signup')">Sign Up</button>
+  <div class="display">
+    <div class="display-expr" id="expr"></div>
+    <div class="display-val"  id="val">0</div>
   </div>
 
-  <!-- LOGIN FORM -->
-  <form id="login" class="form active" onsubmit="handleLogin(event)" novalidate autocomplete="off">
-    <!-- Honeypot bot trap -->
-    <input class="hp" type="text" name="website" tabindex="-1" aria-hidden="true" />
+  <div class="grid">
+    <button class="btn-clear" onclick="pressClear()">C</button>
+    <button class="btn-op"    onclick="pressBack()">⌫</button>
+    <button class="btn-op"    onclick="pressPercent()">%</button>
+    <button class="btn-op"    onclick="pressOp('/')">÷</button>
 
-    <div class="field">
-      <label for="l-email">Email</label>
-      <input id="l-email" type="email" placeholder="name@company.com" required maxlength="100" />
-      <span class="hint" id="l-email-err">Enter a valid email address.</span>
-    </div>
-    <div class="field">
-      <label for="l-pass">Password</label>
-      <input id="l-pass" type="password" placeholder="••••••••" required maxlength="128" />
-      <span class="hint" id="l-pass-err">Password is required.</span>
-    </div>
-    <div class="lockout-msg" id="lockout-msg">
-      🔒 Too many failed attempts. Try again in <span id="countdown">30</span>s.
-    </div>
-    <button type="submit" id="login-btn">Sign In</button>
-    <div class="divider">or</div>
-    <div class="footer-link">New here? <a href="#" onclick="switchTab('signup');return false;">Join now</a></div>
-  </form>
+    <button onclick="pressDigit('7')">7</button>
+    <button onclick="pressDigit('8')">8</button>
+    <button onclick="pressDigit('9')">9</button>
+    <button class="btn-op" onclick="pressOp('*')">×</button>
 
-  <!-- SIGNUP FORM -->
-  <form id="signup" class="form" onsubmit="handleSignup(event)" novalidate autocomplete="off">
-    <input class="hp" type="text" name="website" tabindex="-1" aria-hidden="true" />
+    <button onclick="pressDigit('4')">4</button>
+    <button onclick="pressDigit('5')">5</button>
+    <button onclick="pressDigit('6')">6</button>
+    <button class="btn-op" onclick="pressOp('-')">−</button>
 
-    <div class="field">
-      <label for="s-name">Full Name</label>
-      <input id="s-name" type="text" placeholder="Jane Doe" required maxlength="60" />
-      <span class="hint" id="s-name-err">Name must be 2–60 characters.</span>
-    </div>
-    <div class="field">
-      <label for="s-email">Email</label>
-      <input id="s-email" type="email" placeholder="name@company.com" required maxlength="100" />
-      <span class="hint" id="s-email-err">Enter a valid email address.</span>
-    </div>
-    <div class="field">
-      <label for="s-pass">Password</label>
-      <input id="s-pass" type="password" placeholder="Create a strong password" required maxlength="128" />
-      <span class="hint" id="s-pass-err">Password must be at least 8 characters.</span>
-    </div>
-    <button type="submit">Create Account</button>
-    <div class="divider">or</div>
-    <div class="footer-link">Have an account? <a href="#" onclick="switchTab('login');return false;">Sign in</a></div>
-  </form>
+    <button onclick="pressDigit('1')">1</button>
+    <button onclick="pressDigit('2')">2</button>
+    <button onclick="pressDigit('3')">3</button>
+    <button class="btn-op" onclick="pressOp('+')">+</button>
+
+    <button onclick="pressNegate()">+/−</button>
+    <button onclick="pressDigit('0')">0</button>
+    <button onclick="pressDigit('.')">.</button>
+    <button class="btn-eq" onclick="pressEquals()">=</button>
+  </div>
 </div>
 
 <script>
-  // ── Tab switcher ────────────────────────────────────────────
-  function switchTab(tab) {
-    document.querySelectorAll('.tab').forEach((t,i) =>
-      t.classList.toggle('active', (tab==='login' ? i===0 : i===1)));
-    document.querySelectorAll('.form').forEach(f =>
-      f.classList.toggle('active', f.id === tab));
-    clearErrors();
+  const elVal  = document.getElementById('val');
+  const elExpr = document.getElementById('expr');
+
+  let display   = '';
+  let firstOp   = null;
+  let operator  = null;
+  let waiting   = false;
+  let computed  = false;
+
+  const opLabel = { '+': '+', '-': '−', '*': '×', '/': '÷' };
+
+  function setVal(v)  { elVal.textContent  = v; }
+  function setExpr(v) { elExpr.textContent = v; }
+
+  function pressDigit(d) {
+    if (computed) { display = ''; computed = false; }
+    if (waiting)  { display = ''; waiting  = false; }
+    if (d === '.' && display.includes('.')) return;
+    display = (display === '0' || display === '') && d !== '.' ? d : display + d;
+    setVal(display);
   }
 
-  // ── Sanitize: strip HTML tags from any string ───────────────
-  function sanitize(str) {
-    const div = document.createElement('div');
-    div.appendChild(document.createTextNode(str));
-    return div.innerHTML;
+  function pressOp(op) {
+    const cur = parseFloat(display) || 0;
+    if (firstOp !== null && !waiting) {
+      const res = compute(firstOp, operator, cur);
+      display = fmt(res);
+      setVal(display);
+      firstOp = isFinite(res) ? res : cur;
+    } else {
+      firstOp = cur;
+    }
+    setExpr(fmt(firstOp) + ' ' + opLabel[op]);
+    operator = op;
+    waiting  = true;
+    computed = false;
   }
 
-  // ── Validators ──────────────────────────────────────────────
-  const emailRe = /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/;
-
-  function validateEmail(val) { return emailRe.test(val.trim()); }
-  function validatePass(val)  { return val.length >= 8; }
-  function validateName(val)  { return val.trim().length >= 2 && val.trim().length <= 60; }
-
-  function showErr(id, msg) {
-    const el = document.getElementById(id);
-    const inp = el.previousElementSibling;
-    el.textContent = msg;
-    el.classList.add('show');
-    inp.classList.add('error');
-  }
-  function clearErrors() {
-    document.querySelectorAll('.hint').forEach(e => e.classList.remove('show'));
-    document.querySelectorAll('input').forEach(e => e.classList.remove('error'));
+  function pressEquals() {
+    if (firstOp === null || operator === null) return;
+    const cur = parseFloat(display) || 0;
+    setExpr(fmt(firstOp) + ' ' + opLabel[operator] + ' ' + fmt(cur) + ' =');
+    const res = compute(firstOp, operator, cur);
+    display  = fmt(res);
+    setVal(display);
+    firstOp  = null;
+    operator = null;
+    waiting  = false;
+    computed = true;
   }
 
-  // ── Rate limiting (5 attempts → 30s lockout) ─────────────────
-  let attempts = 0, locked = false;
-
-  function lockout() {
-    locked = true;
-    const btn = document.getElementById('login-btn');
-    const msg = document.getElementById('lockout-msg');
-    const cd  = document.getElementById('countdown');
-    btn.disabled = true;
-    msg.classList.add('show');
-    let secs = 30;
-    cd.textContent = secs;
-    const t = setInterval(() => {
-      secs--;
-      cd.textContent = secs;
-      if (secs <= 0) {
-        clearInterval(t);
-        locked = false;
-        attempts = 0;
-        btn.disabled = false;
-        msg.classList.remove('show');
-      }
-    }, 1000);
+  function compute(a, op, b) {
+    switch (op) {
+      case '+': return a + b;
+      case '-': return a - b;
+      case '*': return a * b;
+      case '/': return b === 0 ? NaN : a / b;
+    }
   }
 
-  // ── Bot detection (honeypot) ─────────────────────────────────
-  function isBot(form) {
-    return form.querySelector('[name="website"]').value !== '';
+  function fmt(n) {
+    if (!isFinite(n)) return 'Error';
+    return String(Math.round(n * 1e10) / 1e10);
   }
 
-  // ── Login handler ────────────────────────────────────────────
-  function handleLogin(e) {
-    e.preventDefault();
-    clearErrors();
-    if (locked || isBot(e.target)) return;
-
-    const email = sanitize(document.getElementById('l-email').value);
-    const pass  = document.getElementById('l-pass').value;
-    let valid = true;
-
-    if (!validateEmail(email)) { showErr('l-email-err', 'Enter a valid email address.'); valid = false; }
-    if (!pass)                  { showErr('l-pass-err',  'Password is required.');        valid = false; }
-
-    if (!valid) { attempts++; if (attempts >= 5) lockout(); return; }
-
-    sessionStorage.setItem('auth_email', email);
-    attempts = 0;
-    window.location.href = 'dashboard.html';
+  function pressClear() {
+    display = ''; firstOp = null; operator = null; waiting = false; computed = false;
+    setVal('0'); setExpr('');
   }
 
-  // ── Signup handler ───────────────────────────────────────────
-  function handleSignup(e) {
-    e.preventDefault();
-    clearErrors();
-    if (isBot(e.target)) return;
+  function pressBack() {
+    if (computed) { pressClear(); return; }
+    display = display.slice(0, -1);
+    setVal(display || '0');
+  }
 
-    const name  = sanitize(document.getElementById('s-name').value);
-    const email = sanitize(document.getElementById('s-email').value);
-    const pass  = document.getElementById('s-pass').value;
-    let valid = true;
+  function pressPercent() {
+    display = fmt((parseFloat(display) || 0) / 100);
+    setVal(display);
+    computed = true;
+  }
 
-    if (!validateName(name))   { showErr('s-name-err',  'Name must be 2–60 characters.'); valid = false; }
-    if (!validateEmail(email)) { showErr('s-email-err', 'Enter a valid email address.');  valid = false; }
-    if (!validatePass(pass))   { showErr('s-pass-err',  'Password must be at least 8 characters.'); valid = false; }
-
-    if (!valid) return;
-    sessionStorage.setItem('auth_email', email);
-    window.location.href = 'dashboard.html';
+  function pressNegate() {
+    display = fmt(-(parseFloat(display) || 0));
+    setVal(display);
   }
 </script>
 
 </body>
 </html>
-#changes
